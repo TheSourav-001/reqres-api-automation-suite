@@ -1,0 +1,542 @@
+{
+  "info": {
+    "_postman_id": "9608ea6e-77e3-4eb3-8e77-fdd1d0dc3bed",
+    "name": "ReqRes Automation Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "51202975"
+  },
+  "item": [
+    {
+      "name": "Q3 - Authentication",
+      "item": [
+        {
+          "name": "Request Magic Link (Login)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{publicKey}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Reqres-Env",
+                "value": "{{env}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"nt9693707@gmail.com\",\r\n  \"project_id\": \"{{projectId}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/app-users/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "app-users",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "console.log(jsonData);\r",
+                  "\r",
+                  "pm.environment.set(\r",
+                  "    \"sessionToken\",\r",
+                  "    jsonData.data.session_token\r",
+                  ");\r",
+                  "\r",
+                  "pm.test(\"Session token generated\", function () {\r",
+                  "    pm.expect(\r",
+                  "        jsonData.data.session_token\r",
+                  "    ).to.not.be.undefined;\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Reqres-Env",
+                "value": "{{env}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"token\": \"81360801\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/app-users/verify",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "app-users",
+                "verify"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Q4 - GET User",
+      "item": [
+        {
+          "name": "Get User Records",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Response contains data\", function () {\r",
+                  "    pm.expect(jsonData.data.length).to.be.above(0);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Name matched\", function () {\r",
+                  "    pm.expect(\r",
+                  "        jsonData.data[0].data.name\r",
+                  "    ).to.eql(\"Sourav Dipto Apu\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Email matched\", function () {\r",
+                  "    pm.expect(\r",
+                  "        jsonData.data[0].data.email\r",
+                  "    ).to.eql(\"sourav@gmail.com\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Role matched\", function () {\r",
+                  "    pm.expect(\r",
+                  "        jsonData.data[0].data.role\r",
+                  "    ).to.eql(\"Student(OSTAD-QA)\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Reqres-Env",
+                "value": "{{env}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/collections/{{collectionSlug}}/records?project_id={{projectId}}&x-api-key={{apiKey}}&X-Reqres-Env={{env}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "collections",
+                "{{collectionSlug}}",
+                "records"
+              ],
+              "query": [
+                {
+                  "key": "project_id",
+                  "value": "{{projectId}}"
+                },
+                {
+                  "key": "x-api-key",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "X-Reqres-Env",
+                  "value": "{{env}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Q5 - PUT Update",
+      "item": [
+        {
+          "name": "Update User Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Reqres-Env",
+                "value": "{{env}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"data\": {\r\n    \"name\": \"Sourav Dipto Apu\",\r\n    \"email\": \"apu@gmail.com\",\r\n    \"role\": \"QA Engineer\",\r\n    \"department\": \"Automation Testing\",\r\n    \"status\": \"Inactive\"\r\n  }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/collections/{{collectionSlug}}/records/{{recordId}}?x-api-key={{apiKey}}&X-Reqres-Env={{env}}&Content-Type=application/json",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "collections",
+                "{{collectionSlug}}",
+                "records",
+                "{{recordId}}"
+              ],
+              "query": [
+                {
+                  "key": "x-api-key",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "X-Reqres-Env",
+                  "value": "{{env}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Q6 - PATCH Update",
+      "item": [
+        {
+          "name": "Patch User Status",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "const jsonData = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Status field updated\", function () {\r",
+                  "    pm.expect(\r",
+                  "        jsonData.data.status\r",
+                  "    ).to.eql(\"Active\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Only one field sent in request\", function () {\r",
+                  "    const requestBody = JSON.parse(pm.request.body.raw);\r",
+                  "\r",
+                  "    pm.expect(\r",
+                  "        Object.keys(requestBody.data).length\r",
+                  "    ).to.eql(1);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Reqres-Env",
+                "value": "{{env}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"data\": {\r\n    \"status\": \"Active\"\r\n  }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/collections/{{collectionSlug}}/records/{{recordId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "collections",
+                "{{collectionSlug}}",
+                "records",
+                "{{recordId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Q8 - Negative Testing",
+      "item": [
+        {
+          "name": "Invalid API Key Test",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"403 status returned\", function () {\r",
+                  "    pm.expect(pm.response.code).to.be.oneOf([401,403]);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "1234",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/collections/{{collectionSlug}}/records?project_id={{projectId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "collections",
+                "{{collectionSlug}}",
+                "records"
+              ],
+              "query": [
+                {
+                  "key": "project_id",
+                  "value": "{{projectId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Wrong Endpoint Test",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Reqres-Env",
+                "value": "{{env}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/collections/wrong-collection/records",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "collections",
+                "wrong-collection",
+                "records"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Used Token Test",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{apiKey}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"token\": \"10224520\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/app-users/verify",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "app-users",
+                "verify"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Restore Original User Data",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "{{apiKey}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"data\": {\r\n    \"name\": \"Sourav Dipto Apu\",\r\n    \"email\": \"sourav@gmail.com\",\r\n    \"role\": \"Student(OSTAD-QA)\",\r\n    \"department\": \"Software Engineering\",\r\n    \"status\": \"Active\"\r\n  }\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/collections/{{collectionSlug}}/records/{{recordId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "collections",
+            "{{collectionSlug}}",
+            "records",
+            "{{recordId}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
